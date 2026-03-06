@@ -1,7 +1,6 @@
 ﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
-using FoodDeliveryServer.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryServer.Services
@@ -13,7 +12,7 @@ namespace FoodDeliveryServer.Services
         {
             _context = context;
         }
-        public async Task<object> GetBestSellers()
+        public async Task<List<BestSellersDto>> GetBestSellers()
         {
             var stats = await _context.OrderItems
                 // 1. 筛选：只要最近 7 天的订单
@@ -23,7 +22,7 @@ namespace FoodDeliveryServer.Services
                 .GroupBy(o => new { o.FoodId, o.Food!.Name })
 
                 // 4. 统计：对于每一堆(g)，我们要算出什么？
-                .Select(g => new
+                .Select(g => new BestSellersDto
                 {
                     FoodId = g.Key.FoodId,                       // 菜名
                     FoodName = g.Key.Name,
@@ -42,13 +41,13 @@ namespace FoodDeliveryServer.Services
             return stats;
         }
 
-        public async Task<object> GetSentimentStats()
+        public async Task<List<SentimentStatDto>> GetSentimentStats()
         {
             var stats = await _context.Orders
                 .GroupBy(o => o.Sentiment)
-                .Select(g => new
+                .Select(g => new SentimentStatDto
                 {
-                    Label = g.Key,
+                    Label = g.Key ?? "Unknown",
                     Count = g.Count()
                 })
                 .ToListAsync();
@@ -56,19 +55,18 @@ namespace FoodDeliveryServer.Services
             return stats;
         }
 
-        public async Task<object> GetTopSpender()
+        public async Task<TopSpenderDto?> GetTopSpender()
         {
             var stats = await _context.Orders
                 .Where(o => o.Status != OrderStatus.Cancelled)
                 .GroupBy(o => o.UserId)
-                .Select(g => new
+                .Select(g => new TopSpenderDto
                 {
                     CustomerId = g.Key,
                     TotalSpent = g.Sum(o => o.TotalPrice)
                 })
                 .OrderByDescending(x => x.TotalSpent)
-                .Take(1)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
             return stats;
         }
     }

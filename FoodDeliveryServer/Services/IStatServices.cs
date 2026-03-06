@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FoodDeliveryServer.Dtos;
 
 namespace FoodDeliveryServer.Services
 {
     public interface IStatServices
     {
-        Task<object> GetBestSellers();
-        Task<object> GetTopSpender();
-        Task<object> GetSentimentStats();
+        Task<List<BestSellersDto>> GetBestSellers();
+        Task<TopSpenderDto?> GetTopSpender();
+        Task<List<SentimentStatDto>> GetSentimentStats();
     }
 }

@@ -30,6 +30,7 @@ builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IStatServices, StatServices>();
 
 //【新增】注册后台托管服务
 builder.Services.AddHostedService<FoodDeliveryServer.BackgroundServices.AutoOrderProcessor>();
