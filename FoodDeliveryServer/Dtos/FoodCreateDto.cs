@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodDeliveryServer.Dtos
 {
@@ -11,7 +11,7 @@ namespace FoodDeliveryServer.Dtos
         [Range(0.01, 10000.00, ErrorMessage = "Price must be between 0.01 and 10,000.00.")]
         public decimal Price { get; set; }
 
-        // 👇 IFormFile 是专门用来接前端上传的文件的
+        // 👇 IFormFile is specifically used to receive files uploaded from the frontend
         public IFormFile? Image { get; set; }
     }
 }

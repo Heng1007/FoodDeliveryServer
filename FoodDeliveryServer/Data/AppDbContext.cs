@@ -1,18 +1,18 @@
-﻿using FoodDeliveryServer.Models;
+using FoodDeliveryServer.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryServer.Data
 {
-    // 继承 DbContext，这就变成了 EF Core 的数据库管家
+    // Inherits DbContext, making this the EF Core database manager
     public class AppDbContext : DbContext
     {
-        // 构造函数：接收配置（比如数据库连接字符串）传给父类
+        // Constructor: receives configuration (like database connection string) and passes it to the base class
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        // 这就是你的“表”。
-        // DbSet<FoodItem> 表示数据库里会有一张表叫 "FoodItems"
+        // These are your "tables".
+        // DbSet<FoodItem> means there will be a table named "FoodItems" in the database
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -24,10 +24,10 @@ namespace FoodDeliveryServer.Data
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.Status)
-                .HasConversion<string>(); // 👈 这行代码是救命稻草！
-                                          // 它的作用：
-                                          // 存的时候：把 Enum.Pending 变成 "Pending"
-                                          // 取的时候：把 "Pending" 变成 Enum.Pending
+                .HasConversion<string>(); // 👈 This line is a lifesaver!
+                                          // Its purpose:
+                                          // When saving: converts Enum.Pending to "Pending"
+                                          // When retrieving: converts "Pending" to Enum.Pending
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,27 +15,27 @@ namespace FoodDeliveryServer.Services
         public async Task<List<BestSellersDto>> GetBestSellers()
         {
             var stats = await _context.OrderItems
-                // 1. 筛选：只要最近 7 天的订单
+                // 1. Filter: only orders from the last 7 days
                 .Where(o => o.Order!.OrderDate >= DateTime.Now.AddDays(-7))
 
-                // 3. 分组：把相同名字的菜堆在一起 (比如所有的 Burger 放一堆)
+                // 3. Group: put dishes with the same name together (e.g., all Burgers in one pile)
                 .GroupBy(o => new { o.FoodId, o.Food!.Name })
 
-                // 4. 统计：对于每一堆(g)，我们要算出什么？
+                // 4. Calculate: for each group (g), what do we want to output?
                 .Select(g => new BestSellersDto
                 {
-                    FoodId = g.Key.FoodId,                       // 菜名
+                    FoodId = g.Key.FoodId,                       // Food ID
                     FoodName = g.Key.Name,
-                    TotalSold = g.Sum(o => o.Quantity)  // 卖出的总数量 (把这一堆的 Quantity 加起来)
+                    TotalSold = g.Sum(o => o.Quantity)  // Total quantity sold (sum of Quantity in this group)
                 })
 
-                // 5. 排序：卖得最多的排在最上面 (Descending = 降序)
+                // 5. Order: the best-selling ones on top (Descending)
                 .OrderByDescending(x => x.TotalSold)
 
-                // 6. 截取：只取前 3 名
+                // 6. Limit: only take the top 3
                 .Take(3)
 
-                // 7. 执行查询
+                // 7. Execute query
                 .ToListAsync();
 
             return stats;

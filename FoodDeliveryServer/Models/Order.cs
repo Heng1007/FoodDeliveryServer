@@ -1,27 +1,27 @@
-﻿namespace FoodDeliveryServer.Models
+namespace FoodDeliveryServer.Models
 {
     public class Order
     {
         public int Id { get; set; }
 
-        // 如果你有User表，最好存 UserId；如果没有，先保留 CustomerName
+        // If you have a User table, it's better to store UserId; otherwise, keep CustomerName for now
         public int UserId { get; set; }
-        // public string CustomerName { get; set; } // (旧的，建议换成 UserId)
+        // public string CustomerName { get; set; } // (Old, recommend changing to UserId)
 
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
-        // 👇 修正：钱必须是存下来的死数字，不能是用 get 计算的
+        // 👇 Fix: Price must be a stored static number, not calculated via get
         public decimal TotalPrice { get; set; }
 
-        // 👇 新增：顾客备注
+        // 👇 New: Customer note
         public string? CustomerNote { get; set; }
 
-        // 👇 新增：AI 分析结果
+        // 👇 New: AI analysis result
         public string? Sentiment { get; set; }
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
-        // 👇 关键：一个订单包含“一堆”具体的菜
+        // 👇 Crucial: An order contains a bunch of specific items
         public List<OrderItem> Items { get; set; } = new();
     }
 }

@@ -1,6 +1,6 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Services;
-using FoodDeliveryServer.Middleware; // 👈 记得引用这个命名空间
+using FoodDeliveryServer.Middleware; // 👈 Remember to reference this namespace
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -10,32 +10,32 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================
-// 🏗️ 第一阶段：注册服务 (Builder 阶段)
+// 🏗️ Phase 1: Register Services (Builder Phase)
 // ==========================================
 
-// 1. 注册 Controller
+// 1. Register Controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // 这一行是魔法！它让 Swagger 把 Enum 识别为字符串列表
+        // This line is magic! It allows Swagger to recognize Enum as a list of strings
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
-// 2. 注册数据库 (DbContext)
+// 2. Register Database (DbContext)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. 注册业务逻辑服务 (Dependency Injection)
+// 3. Register Business Logic Services (Dependency Injection)
 builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStatServices, StatServices>();
 
-//【新增】注册后台托管服务
+// [New] Register Hosted Background Services
 builder.Services.AddHostedService<FoodDeliveryServer.BackgroundServices.AutoOrderProcessor>();
 
-// 4. 配置 CORS (允许跨域)
+// 4. Configure CORS (Cross-Origin Resource Sharing)
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-// 5. 配置 Swagger (带 JWT 锁头功能)
+// 5. Configure Swagger (With JWT lock feature)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -88,10 +88,10 @@ var jwtKey = builder.Configuration["MyJwtKey"];
 
 if (string.IsNullOrEmpty(jwtKey))
 {
-    throw new Exception("🚨 严重错误：在配置里找不到 'MyJwtKey'！请去 Azure 检查 Environment Variables！");
+    throw new Exception("🚨 Critical Error: 'MyJwtKey' cannot be found in configuration! Please check Environment Variables in Azure!");
 }
 
-// 6. 配置 JWT 身份验证
+// 6. Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -111,41 +111,41 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ==========================================
-// 🚧 分界线：房子盖好了 (Build)
+// 🚧 Boundary: The house is built (Build)
 // ==========================================
 var app = builder.Build();
 
 // ==========================================
-// 🚦 第二阶段：配置管道 (App 阶段)
+// 🚦 Phase 2: Configure Pipeline (App Phase)
 // ==========================================
 
-// 1. 全局异常处理 (Day 24 重点：必须放在第一位！)
-// 这样它才能捕获下面所有中间件发生的错误
+// 1. Global Exception Handling (Must be placed first!)
+// This allows it to catch errors from all subsequent middlewares
 app.UseMiddleware<ExceptionMiddleware>();
 
-// 2. Swagger 界面 (开发环境可见)
+// 2. Swagger UI (Visible in Development environment)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 3. 静态文件 (Day 21 重点：允许访问 wwwroot)
-app.UseDefaultFiles(); // 允许直接访问 index.html
-app.UseStaticFiles();  // 允许访问 /images/xxx.jpg
+// 3. Static Files (Allow access to wwwroot)
+app.UseDefaultFiles(); // Allow direct access to index.html
+app.UseStaticFiles();  // Allow access to /images/xxx.jpg
 
-// 4. HTTPS 重定向
+// 4. HTTPS Redirection
 app.UseHttpsRedirection();
 
-// 5. CORS (必须在 Auth 之前)
+// 5. CORS (Must be before Auth)
 app.UseCors(MyAllowSpecificOrigins);
 
-// 6. 身份验证 & 授权 (顺序不能乱)
-app.UseAuthentication(); // 你是谁？
-app.UseAuthorization();  // 你能干嘛？
+// 6. Authentication & Authorization (Order is strict)
+app.UseAuthentication(); // Who are you?
+app.UseAuthorization();  // What can you do?
 
-// 7. 映射控制器
+// 7. Map Controllers
 app.MapControllers();
 
-// 8. 启动程序
+// 8. Run the Application
 app.Run();

@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryServer.BackgroundServices
@@ -35,24 +35,24 @@ namespace FoodDeliveryServer.BackgroundServices
 
         private async Task DoWorkAsync()
         {
-            // 👇 重点！手动创建一个 Scope (范围)
-            // 就像手动模拟一次 "HTTP 请求" 的生命周期
+            // 👇 Important! Manually create a Scope
+            // Similar to manually simulating the lifecycle of an "HTTP Request"
             using (var scope = _scopeFactory.CreateScope())
             {
-                // 从 Scope 里拿出数据库连接 (AppDbContext)
+                // Retrieve the database connection from the Scope (AppDbContext)
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // 简单的任务：数一下有多少个订单
+                // Simple task: count the number of orders
                 var count = await context.Orders.CountAsync();
 
                 _logger.LogInformation($" Autocount: {count} orders");
 
-                // --- 未来你想写的复杂逻辑都在这里写 ---
-                // 比如: var expiredOrders = context.Orders.Where(...)
+                // --- Future complex logic can be written here ---
+                // For example: var expiredOrders = context.Orders.Where(...)
                 // context.RemoveRange(expiredOrders);
                 // await context.SaveChangesAsync();
             }
-            // 👈 出了这里，Scope 销毁，数据库连接自动断开 (一次性抹布扔掉)
+            // 👈 Exiting this block destroys the Scope, automatically closing the database connection (disposable)
         }
     }
 }

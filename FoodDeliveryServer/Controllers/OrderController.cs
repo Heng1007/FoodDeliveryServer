@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Dtos;
+using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
 using FoodDeliveryServer.Services;
 using FoodDeliveryServer.Utils;
@@ -20,8 +20,8 @@ namespace FoodDeliveryServer.Controllers
                 var idClaim = User.FindFirst("id")?.Value;
                 if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int userId))
                 {
-                    // 如果拿不到 ID，抛个异常或者返回 0 (视情况而定)
-                    // 这里为了简单，如果拿不到通常说明 [Authorize] 没生效或 Token 坏了
+                    // If ID cannot be retrieved, throw an exception or return 0 (depending on context)
+                    // For simplicity, if not found, it usually means [Authorize] has not taken effect or Token is invalid
                     return 0;
                 }
                 return userId;
@@ -33,7 +33,7 @@ namespace FoodDeliveryServer.Controllers
             _orderService = orderService;
         }
 
-        // 1. 获取所有订单
+        // 1. Get all orders
         [Authorize(Roles = Constants.Roles.Admin)]
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetOrders()
@@ -48,21 +48,21 @@ namespace FoodDeliveryServer.Controllers
         {
             if (CurrentUserId == 0)
             {
-                return Unauthorized("无法识别用户身份");
+                return Unauthorized("User identity could not be verified");
             }
             var orders = await _orderService.GetOrdersByUserId(CurrentUserId);
             return Ok(orders);
         }
 
 
-        // 2. 下单 (Create Order)
+        // 2. Place order (Create Order)
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderDto dto)
         {
             if (CurrentUserId == 0)
             {
-                return Unauthorized("无法识别用户身份");
+                return Unauthorized("User identity could not be verified");
             }
             var order = await _orderService.CreateOrder(CurrentUserId, dto);
 
@@ -75,7 +75,7 @@ namespace FoodDeliveryServer.Controllers
             var result = await _orderService.GetTopSpender();
             if (result == null)
             {
-                return NotFound("目前没有订单");
+                return NotFound("Currently no orders");
             }
             return Ok(result);
         }
@@ -83,13 +83,13 @@ namespace FoodDeliveryServer.Controllers
 
         [Authorize(Roles = Constants.Roles.Admin)]
         [HttpGet("PagedResult")]
-        // 👇 [FromQuery] 表示参数来自网址问号后面 (例如 ?page=2)
+        // 👇 [FromQuery] means the parameter comes from the URL query string (e.g., ?page=2)
         public async Task<ActionResult<PagedResult<Order>>> GetOrders(
-            [FromQuery] int page = 1,      // 默认第 1 页
-            [FromQuery] int pageSize = 10  // 默认每页 10 条
+            [FromQuery] int page = 1,      // Default to page 1
+            [FromQuery] int pageSize = 10  // Default to 10 items per page
         )
         {
-            // 防御性编程：防止有人传 page=-1 或者 pageSize=1000000
+            // Defensive programming: Prevent passing page=-1 or pageSize=1000000
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 50) pageSize = 10;
 
@@ -111,7 +111,7 @@ namespace FoodDeliveryServer.Controllers
         {
             if (CurrentUserId == 0)
             {
-                return Unauthorized("无法识别用户身份");
+                return Unauthorized("User identity could not be verified");
             }
 
             var errorMsg = await _orderService.CancelOrder(orderId, CurrentUserId);
@@ -121,7 +121,7 @@ namespace FoodDeliveryServer.Controllers
                 return BadRequest(errorMsg);
             }
 
-            return Ok("订单" + orderId + "已成功取消!");
+            return Ok("Order " + orderId + " has been successfully cancelled!");
         }
 
         [Authorize]

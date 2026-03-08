@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
             <a class="navbar-brand" href="#">🍔 Heng's Delivery</a>
             <div class="d-flex">
                 <span id="user-info" class="navbar-text text-white me-3 hidden"></span>
-                <button id="btn-logout" class="btn btn-light btn-sm hidden" onclick="logout()">退出</button>
+                <button id="btn-logout" class="btn btn-light btn-sm hidden" onclick="logout()">Logout</button>
             </div>
         </div>
     </nav>
@@ -47,27 +47,27 @@
         <div id="auth-section" class="row justify-content-center">
             <div class="col-md-5">
                 <div class="card p-4">
-                    <h3 class="text-center mb-3">欢迎光临</h3>
+                    <h3 class="text-center mb-3">Welcome</h3>
 
                     <div id="login-form">
-                        <input type="text" id="login-username" class="form-control mb-2" placeholder="用户名">
-                        <input type="password" id="login-password" class="form-control mb-3" placeholder="密码">
-                        <button class="btn btn-primary w-100" onclick="login()">登录</button>
+                        <input type="text" id="login-username" class="form-control mb-2" placeholder="Username">
+                        <input type="password" id="login-password" class="form-control mb-3" placeholder="Password">
+                        <button class="btn btn-primary w-100" onclick="login()">Login</button>
                         <p class="text-center mt-2">
-                            <small>还没账号? <a href="#" onclick="toggleAuth('register')">去注册</a></small>
+                            <small>No account? <a href="#" onclick="toggleAuth('register')">Register here</a></small>
                         </p>
                     </div>
 
                     <div id="register-form" class="hidden">
-                        <input type="text" id="reg-username" class="form-control mb-2" placeholder="新用户名">
-                        <input type="password" id="reg-password" class="form-control mb-2" placeholder="设置密码">
+                        <input type="text" id="reg-username" class="form-control mb-2" placeholder="New Username">
+                        <input type="password" id="reg-password" class="form-control mb-2" placeholder="Set Password">
                         <select id="reg-role" class="form-select mb-3">
-                            <option value="User">我是顾客 (User)</option>
-                            <option value="Admin">我是老板 (Admin)</option>
+                            <option value="User">I am a Customer (User)</option>
+                            <option value="Admin">I am the Boss (Admin)</option>
                         </select>
-                        <button class="btn btn-success w-100" onclick="register()">注册账号</button>
+                        <button class="btn btn-success w-100" onclick="register()">Register Account</button>
                         <p class="text-center mt-2">
-                            <small>已有账号? <a href="#" onclick="toggleAuth('login')">去登录</a></small>
+                            <small>Already have an account? <a href="#" onclick="toggleAuth('login')">Login here</a></small>
                         </p>
                     </div>
                 </div>
@@ -78,8 +78,8 @@
 
             <div class="row mb-4">
                 <div class="col-md-12 text-center">
-                    <button class="btn btn-outline-primary me-2" onclick="fetchOrders()">🔄 刷新订单</button>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#orderModal">➕ 我要点餐</button>
+                    <button class="btn btn-outline-primary me-2" onclick="fetchOrders()">🔄 Refresh Orders</button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#orderModal">➕ Order Food</button>
                 </div>
             </div>
 
@@ -92,36 +92,36 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">创建新订单</h5>
+                    <h5 class="modal-title">Create New Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>收货人姓名</label>
+                        <label>Recipient Name</label>
                         <input type="text" id="order-name" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label>收货地址</label>
+                        <label>Delivery Address</label>
                         <input type="text" id="order-address" class="form-control">
                     </div>
                     <hr>
-                    <h6>菜品选择 (模拟)</h6>
+                    <h6>Food Selection (Simulation)</h6>
                     <div class="form-check">
                         <input class="form-check-input food-item" type="checkbox" value="1" data-price="15">
-                        <label class="form-check-label">🍔 经典汉堡 ($15)</label>
+                        <label class="form-check-label">🍔 Classic Burger ($15)</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input food-item" type="checkbox" value="2" data-price="5">
-                        <label class="form-check-label">🍟 薯条 ($5)</label>
+                        <label class="form-check-label">🍟 Fries ($5)</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input food-item" type="checkbox" value="3" data-price="3">
-                        <label class="form-check-label">🥤 可乐 ($3)</label>
+                        <label class="form-check-label">🥤 Cola ($3)</label>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="createOrder()">提交订单</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createOrder()">Submit Order</button>
                 </div>
             </div>
         </div>
@@ -130,14 +130,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ⚠️⚠️⚠️ 请把这里换成你的 Azure 网址，末尾不要带斜杠
+        // ⚠️⚠️⚠️ Please replace this with your Azure URL, without a trailing slash
         const API_URL = "https://localhost:7035/api";
-        //const API_URL = "https://你的应用名字.azurewebsites.net/api";
+        //const API_URL = "https://your-app-name.azurewebsites.net/api";
 
         let token = localStorage.getItem("jwt_token");
         let username = localStorage.getItem("username");
 
-        // 页面加载时检查登录状态
+        // Check login status when page loads
         checkLoginStatus();
 
         function checkLoginStatus() {
@@ -146,8 +146,8 @@
                 document.getElementById('dashboard-section').classList.remove('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('btn-logout').classList.remove('hidden');
-                document.getElementById('user-info').innerText = `你好, ${username}`;
-                fetchOrders(); // 自动加载订单
+                document.getElementById('user-info').innerText = `Hello, ${username}`;
+                fetchOrders(); // Auto load orders
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('dashboard-section').classList.add('hidden');
@@ -156,7 +156,7 @@
             }
         }
 
-        // 切换登录/注册界面
+        // Toggle login/register UI
         function toggleAuth(mode) {
             if (mode === 'register') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -167,7 +167,7 @@
             }
         }
 
-        // 注册功能
+        // Register functionality
         async function register() {
             const user = document.getElementById('reg-username').value;
             const pass = document.getElementById('reg-password').value;
@@ -181,15 +181,15 @@
                 });
 
                 if (res.ok) {
-                    alert("注册成功！请登录");
+                    alert("Registration successful! Please login.");
                     toggleAuth('login');
                 } else {
-                    alert("注册失败: " + await res.text());
+                    alert("Registration failed: " + await res.text());
                 }
-            } catch (err) { alert("网络错误"); }
+            } catch (err) { alert("Network Error"); }
         }
 
-        // 登录功能
+        // Login functionality
         async function login() {
             const user = document.getElementById('login-username').value;
             const pass = document.getElementById('login-password').value;
@@ -202,25 +202,25 @@
                 });
 
                 if (res.ok) {
-                    const data = await res.text() // 拿到 Token 字符串
+                    const data = await res.text() // Retrieve Token string
                     token = data;
                     username = user;
 
-                    // 存到浏览器里，下次刷新不用重新登录
+                    // Save to browser storage to avoid re-login on refresh
                     localStorage.setItem("jwt_token", token);
                     localStorage.setItem("username", username);
 
                     checkLoginStatus();
                 } else {
-                    alert("登录失败，请检查账号密码");
+                    alert("Login failed. Please check username and password.");
                 }
             } catch (err) {
-                console.error("🔥 详细报错:", err); // 在 F12 Console 里看这个！
-                alert("出错了: " + err.message);
+                console.error("🔥 Detailed error:", err); // Check this in F12 Console!
+                alert("Error: " + err.message);
             }
         }
 
-        // 退出功能
+        // Logout functionality
         function logout() {
             localStorage.removeItem("jwt_token");
             localStorage.removeItem("username");
@@ -228,10 +228,10 @@
             location.reload();
         }
 
-        // 获取订单
+        // Fetch orders
         async function fetchOrders() {
             const container = document.getElementById('orders-container');
-            container.innerHTML = '<p class="text-center">正在加载...</p>';
+            container.innerHTML = '<p class="text-center">Loading...</p>';
 
             try {
                 const res = await fetch(`${API_URL}/Order`, {
@@ -240,29 +240,29 @@
 
                 if (res.ok) {
                     const orders = await res.json();
-                    container.innerHTML = ""; // 清空 loading
+                    container.innerHTML = ""; // Clear loading text
 
                     if (orders.length === 0) {
-                        container.innerHTML = '<p class="text-center text-muted">暂时没有订单，快去下一单吧！</p>';
+                        container.innerHTML = '<p class="text-center text-muted">No orders yet, go place one!</p>';
                         return;
                     }
 
                     orders.forEach(order => {
                         const date = new Date(order.orderDate).toLocaleString();
-                        // 生成卡片 HTML
+                        // Generate card HTML
                         const html = `
                                 <div class="col-md-4 mb-3">
                                     <div class="card h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">📦 订单 #${order.id}</h5>
+                                            <h5 class="card-title">📦 Order #${order.id}</h5>
                                             <h6 class="card-subtitle mb-2 text-muted">${date}</h6>
                                             <p class="card-text">
-                                                <strong>收货人:</strong> ${order.customerName}<br>
-                                                <strong>地址:</strong> ${order.customerAddress}<br>
-                                                <strong>总价:</strong> <span class="text-danger fw-bold">$${order.totalAmount}</span>
+                                                <strong>Recipient:</strong> ${order.customerName}<br>
+                                                <strong>Address:</strong> ${order.customerAddress}<br>
+                                                <strong>Total:</strong> <span class="text-danger fw-bold">$${order.totalAmount}</span>
                                             </p>
                                             <ul class="list-group list-group-flush">
-                                                ${order.items.map(i => `<li class="list-group-item d-flex justify-content-between"><span>${i.foodItemId}号餐</span> <span>x${i.quantity}</span></li>`).join('')}
+                                                ${order.items.map(i => `<li class="list-group-item d-flex justify-content-between"><span>Meal #${i.foodItemId}</span> <span>x${i.quantity}</span></li>`).join('')}
                                             </ul>
                                         </div>
                                     </div>
@@ -271,28 +271,28 @@
                         container.innerHTML += html;
                     });
                 } else {
-                    if (res.status === 401) logout(); // Token 过期自动踢出
-                    else alert("获取订单失败");
+                    if (res.status === 401) logout(); // Auto-kick out if Token expired
+                    else alert("Failed to fetch orders");
                 }
             } catch (err) { console.error(err); }
         }
 
-        // 创建订单
+        // Create order
         async function createOrder() {
             const name = document.getElementById('order-name').value;
             const address = document.getElementById('order-address').value;
 
-            // 获取选中的菜品
+            // Get selected items
             const items = [];
             document.querySelectorAll('.food-item:checked').forEach(checkbox => {
                 items.push({
                     foodItemId: parseInt(checkbox.value),
-                    quantity: 1, // 暂时默认数量为 1
+                    quantity: 1, // Default quantity to 1 for now
                     price: parseFloat(checkbox.dataset.price)
                 });
             });
 
-            if (items.length === 0) { alert("请至少选择一个菜品！"); return; }
+            if (items.length === 0) { alert("Please select at least one item!"); return; }
 
             const payload = {
                 customerName: name,
@@ -311,16 +311,16 @@
                 });
 
                 if (res.ok) {
-                    alert("🎉 下单成功！");
-                    // 关闭弹窗
+                    alert("🎉 Order placed successfully!");
+                    // Close modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('orderModal'));
                     modal.hide();
-                    // 刷新列表
+                    // Refresh list
                     fetchOrders();
                 } else {
-                    alert("下单失败: " + await res.text());
+                    alert("Failed to place order: " + await res.text());
                 }
-            } catch (err) { alert("网络错误"); }
+            } catch (err) { alert("Network Error"); }
         }
     </script>
 </body>

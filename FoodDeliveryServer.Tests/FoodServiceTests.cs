@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 using Microsoft.EntityFrameworkCore;
 using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Services;
@@ -10,8 +10,8 @@ namespace FoodDeliveryServer.Tests
 {
     public class FoodServiceTests
     {
-        // 🛠 1. 准备工具：造一个“全息投影”的假数据库 (InMemory)
-        // 每次运行都会生成一个新的数据库名，保证测试之间互不干扰
+        // 🛠 1. Prepare Tools: Create an "InMemory" database
+        // A new database name is generated every run to ensure tests do not interfere with each other
         private AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -21,12 +21,12 @@ namespace FoodDeliveryServer.Tests
             return new AppDbContext(options);
         }
 
-        [Fact] // 👈 这个标签告诉系统：这是一个测试用例
+        [Fact] // 👈 This tag tells the system: This is a test case
         public async Task AddFood_Should_Save_Food_To_Database()
         {
-            // 🔶 A1: Arrange (准备场景)
-            var context = GetInMemoryDbContext(); // 拿到假数据库
-            var service = new FoodService(context); // 把假数据库塞给厨师(Service)
+            // 🔶 A1: Arrange 
+            var context = GetInMemoryDbContext(); // Get the fake database
+            var service = new FoodService(context); // Give the fake database to the Service
 
             var newFood = new FoodItem
             {
@@ -34,18 +34,18 @@ namespace FoodDeliveryServer.Tests
                 Price = 12.50m
             };
 
-            // 🔶 A2: Act (执行动作)
-            // 让厨师真的去加菜
+            // 🔶 A2: Act 
+            // Actually add the food
             await service.AddFood(newFood);
 
-            // 🔶 A3: Assert (验证结果)
-            // 机器人拿着放大镜去数据库里检查：
+            // 🔶 A3: Assert
+            // Check the database:
 
-            // 检查1：数据库里的数量是不是变成了 1？
+            // Check 1: Did the quantity in the database become 1?
             var count = await context.FoodItems.CountAsync();
             Assert.Equal(1, count);
 
-            // 检查2：那道菜的名字对不对？
+            // Check 2: Is the name of the food correct?
             var savedFood = await context.FoodItems.FirstAsync();
             Assert.Equal("Test Nasi Lemak", savedFood.Name);
         }

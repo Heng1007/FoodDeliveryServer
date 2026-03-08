@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,21 +27,21 @@ namespace FoodDeliveryServer.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
             {
-                _logger.LogWarning($" Login Failed. Username {request.Username}' 不存在");
+                _logger.LogWarning($" Login Failed. Username '{request.Username}' does not exist");
                 throw new UnauthorizedAccessException("Username does not exist.");
             }
 
-            // 2. 验密码：拿用户输入的明文，跟数据库里的乱码比对
-            // BCrypt 会自动处理 Salt，你不用管
+            // 2. Verify password: Compare user's plain text input with the hash in the database
+            // BCrypt automatically handles the Salt
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                _logger.LogWarning($"❌ 登录失败: 用户 '{request.Username}' 密码错误");
+                _logger.LogWarning($"❌ Login Failed: Incorrect password for user '{request.Username}'");
                 throw new UnauthorizedAccessException("Incorrect password.");
             }
 
-            // 3. (核心) 生成 JWT Token 通行证 🎫
-            // 这里代码比较多，我稍后解释每一行
-            _logger.LogInformation($"✅ 用户 '{request.Username}' 登录成功");
+            // 3. (Core) Generate JWT Token pass 🎫
+            // Code here will be explained line by line later
+            _logger.LogInformation($"✅ User '{request.Username}' logged in successfully");
             string token = CreateToken(user);
             return token;
         }
@@ -70,17 +70,16 @@ namespace FoodDeliveryServer.Services
 
         private string CreateToken(User user)
         {
-            // A. 定义“荷载” (Claims) - 也就是手环上写的信息
+            // A. Define "Payload" (Claims) - i.e., info written on the wristband
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username), // 手环上写着用户名
-                new Claim(ClaimTypes.Role, user.Role),     // 手环上写着角色 (Admin/User)
-                new Claim("id", user.Id.ToString())        // 手环上写着用户ID
+                new Claim(ClaimTypes.Name, user.Username), // Wristband shows username
+                new Claim(ClaimTypes.Role, user.Role),     // Wristband shows role (Admin/User)
+                new Claim("id", user.Id.ToString())        // Wristband shows user ID
             };
 
-            // B. 拿钥匙 (从 appsettings 读取刚才配置的 Key)
-            // 注意：实际项目中应该用 IConfiguration 注入读取，这里为了简单演示先硬编码，或者你告诉我你想不想学注入读取？
-            // 为了不报错，我们先暂时写死 (但这是不好的习惯，等你跑通了我们再改)
+            // B. Get the key (Read the Key configured in appsettings)
+            // Note: In an actual project, this should use IConfiguration injection
             var secretKey = _configuration["MyJwtKey"];
             if (string.IsNullOrEmpty(secretKey))
             {
@@ -88,17 +87,17 @@ namespace FoodDeliveryServer.Services
             }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
-            // C. 签名凭证 (用 HmacSha256 算法签名)
+            // C. Signing Credentials (Using HmacSha256 algorithm to sign)
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // D. 制造 Token
+            // D. Create Token
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1), // 有效期 1 天
+                expires: DateTime.Now.AddDays(1), // Valid for 1 day
                 signingCredentials: creds
             );
 
-            // E. 把 Token 对象转成字符串
+            // E. Convert the Token object to a string
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;

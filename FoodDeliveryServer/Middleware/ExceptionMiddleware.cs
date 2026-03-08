@@ -1,12 +1,12 @@
-﻿using FoodDeliveryServer.Dtos;
+using FoodDeliveryServer.Dtos;
 using System.Net;
 
 namespace FoodDeliveryServer.Middleware
 {
     public class ExceptionMiddleware
     {
-        private readonly RequestDelegate _next; // 下一棒接力者
-        private readonly ILogger<ExceptionMiddleware> _logger; // 记录日志
+        private readonly RequestDelegate _next; // Next handler in the pipeline
+        private readonly ILogger<ExceptionMiddleware> _logger; // Logger for recording errors
 
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
@@ -14,20 +14,20 @@ namespace FoodDeliveryServer.Middleware
             _logger = logger;
         }
 
-        // 👇 核心逻辑：拦截所有请求
+        // 👇 Core logic: intercepts all requests
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                // 1. 尝试放行，让请求去 Controller
+                // 1. Attempt to let it pass through to the Controller
                 await _next(context);
             }
             catch (Exception ex)
             {
-                // 2. 如果 Controller 报错了，这里会捉住它！
-                _logger.LogError(ex, $"Something went wrong: {ex.Message}"); // 记下来给开发者看
+                // 2. If the Controller throws an error, it gets caught here!
+                _logger.LogError(ex, $"Something went wrong: {ex.Message}"); // Log it for developers to see
 
-                // 3. 处理错误，返回优雅的 JSON 给用户看
+                // 3. Handle the error and return an elegant JSON response to the user
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -36,32 +36,32 @@ namespace FoodDeliveryServer.Middleware
         {
             context.Response.ContentType = "application/json";
 
-            // 👇 这里的 switch 是核心！根据异常类型决定状态码
+            // 👇 This switch statement is the core! It determines the status code based on the exception type
             switch (exception)
             {
-                // 如果是“未授权”异常 (密码错) -> 返回 401 Unauthorized
+                // If "Unauthorized" exception (wrong password) -> return 401 Unauthorized
                 case UnauthorizedAccessException:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
 
-                // 如果是“参数不对”异常 (比如库存不足) -> 返回 400 Bad Request
-                // 你以后可以用 throw new ArgumentException("库存没了");
+                // If "Invalid Arguments" exception (e.g., out of stock) -> return 400 Bad Request
+                // You can use this later: throw new ArgumentException("Out of stock");
                 case ArgumentException:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
-                // 其他所有未知的错误 -> 返回 500 Internal Server Error
+                // All other unknown errors -> return 500 Internal Server Error
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
 
-            // 构建错误响应
+            // Build error response
             var response = new ErrorResponse
             {
                 StatusCode = context.Response.StatusCode,
-                // 如果是 500，为了安全不要把 exception.Message 给用户看，可以写 "Internal Server Error"
-                // 如果是 401/400，把 Message 给用户看 ("Username or password incorrect.")
+                // If it's a 500, for security, do not expose exception.Message to the user, return "Internal Server Error"
+                // If it's 401/400, show the Message to the user ("Username or password incorrect.")
                 Message = context.Response.StatusCode == 500 ? "Internal Server Error" : exception.Message
             };
 

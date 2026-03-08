@@ -1,6 +1,6 @@
-﻿using FoodDeliveryServer.Dtos;
+using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
-using FoodDeliveryServer.Services; // 👈 记得引用这个！
+using FoodDeliveryServer.Services; // 👈 Remember to reference this!
 using FoodDeliveryServer.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +12,10 @@ namespace FoodDeliveryServer.Controllers
     [ApiController]
     public class FoodController : ControllerBase
     {
-        // 1. 以前这里是 _context，现在变成了 _foodService
+        // 1. Previously this was _context, now it is _foodService
         private readonly IFoodService _foodService;
 
-        // 2. 构造函数：向系统要一个“懂 IFoodService 标准”的人
+        // 2. Constructor: Ask the system for someone who "knows the IFoodService standard"
         public FoodController(IFoodService foodService)
         {
             _foodService = foodService;
@@ -25,7 +25,7 @@ namespace FoodDeliveryServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FoodItem>>> GetFoodItems()
         {
-            // 3. 不再自己查数据库，而是直接指挥 Service
+            // 3. No longer query the database manually, instead instruct the Service directly
             var foods = await _foodService.GetAllFoods();
             return Ok(foods);
         }
@@ -43,18 +43,18 @@ namespace FoodDeliveryServer.Controllers
             
             if(request.Image != null)
             {
-                // a. 生成一个唯一的文件名 (比如: pizza_GUID.jpg)，防止名字重复覆盖
+                // a. Generate a unique file name (e.g., pizza_GUID.jpg) to prevent name collision and overwriting
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.Image.FileName);
-                // b. 拼凑出保存到硬盘的绝对路径 (你的电脑/wwwroot/images/xxx.jpg)
+                // b. Construct the absolute path to save to disk (Your computer/wwwroot/images/xxx.jpg)
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-                // c. 创建文件流，把图片存进去
+                // c. Create file stream, and save the image
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await request.Image.CopyToAsync(stream);
                 }
 
-                // d. 把“网络路径”存到数据库 (注意：是存 URL，不是存文件本身)
-                // 比如: /images/xxx.jpg
+                // d. Save the "Network Path" to the database (Note: save URL, not the file itself)
+                // e.g.: /images/xxx.jpg
                 foodItem.ImageUrl = "/images/" + fileName;
             }
 
@@ -72,11 +72,11 @@ namespace FoodDeliveryServer.Controllers
         }
 
 
-        [HttpGet("error-test")] // 访问地址: GET /api/Food/error-test
+        [HttpGet("error-test")] // URL: GET /api/Food/error-test
         public IActionResult GenerateError()
         {
-            // 故意抛出一个异常
-            throw new Exception("这是我故意制造的爆炸！💥");
+            // Intentionally throw an exception
+            throw new Exception("This is a deliberate explosion! 💥");
         }
     }
 }

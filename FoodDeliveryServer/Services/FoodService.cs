@@ -1,16 +1,16 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryServer.Services
 {
-    // 👨‍🍳 这是一个服务类 (Service)
-    // 它负责具体的脏活累活（操作数据库）
+    // 👨‍🍳 This is a Service class
+    // It is responsible for the heavy lifting (database operations)
     public class FoodService : IFoodService
     {
         private readonly AppDbContext _context;
 
-        // 只有这里需要用到数据库！
+        // Only here do we need to use the database!
         public FoodService(AppDbContext context)
         {
             _context = context;
@@ -19,7 +19,7 @@ namespace FoodDeliveryServer.Services
         public async Task<List<FoodItem>> GetAllFoods()
         {
             return await _context.FoodItems
-                         .OrderBy(f => f.Id) // 或者是 f.Name
+                         .OrderBy(f => f.Id) // Or f.Name
                          .Where(f => !f.IsDeleted)
                          .ToListAsync();
         }

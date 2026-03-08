@@ -1,21 +1,21 @@
-﻿using FoodDeliveryServer.Models;
+using FoodDeliveryServer.Models;
 
 namespace FoodDeliveryServer.Services
 {
-    // 📜 这是一个接口 (Interface)
-    // 它只定义“我们要干什么”，不定义“怎么干”
+    // 📜 This is an Interface
+    // It only specifies "what we need to do", not "how to do it"
     public interface IFoodService
     {
-        // 1. 获取所有食物
+        // 1. Get all food items
         Task<List<FoodItem>> GetAllFoods();
 
-        // 2. 添加食物
+        // 2. Add food item
         Task<FoodItem> AddFood(FoodItem food);
 
-        // 4. 删除食物
+        // 4. Delete food item
         Task DeleteFood(int id);
 
-        // 3. 根据ID找食物 (为了配合 Order 使用)
+        // 3. Find food by ID (for use with Order)
         Task<FoodItem?> GetFoodById(int id);
     }
 }

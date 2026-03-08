@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Dtos;
 using FoodDeliveryServer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +80,7 @@ namespace FoodDeliveryServer.Services
             string sentimentResult = "Neutral";
             if (!string.IsNullOrEmpty(dto.CustomerNote))
             {
-                // 如果顾客写了备注，就发给 AI 看看
+                // If the customer wrote a note, send it to AI for analysis
                 sentimentResult = await _aiService.AnalyzeSentiment(dto.CustomerNote);
             }
 
@@ -111,7 +111,7 @@ namespace FoodDeliveryServer.Services
                     TotalSpent = g.Sum(o => o.TotalPrice)
                 })
                 .OrderByDescending(x => x.TotalSpent)
-                .FirstOrDefaultAsync(); // 👈 直接拿第1个，拿不到就是 null
+                .FirstOrDefaultAsync(); // 👈 Taking the first one directly, returns null if none found
             return topSpender;
         }
 

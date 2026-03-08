@@ -1,4 +1,4 @@
-﻿using FoodDeliveryServer.Data;
+using FoodDeliveryServer.Data;
 using FoodDeliveryServer.Models;
 using FoodDeliveryServer.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace FoodDeliveryServer.Controllers
         }
 
         // GET: api/Stats/BestSellers
-        // 获取过去 7 天最受欢迎的 3 道菜
+        // Get the top 3 best-selling dishes from the past 7 days
         [HttpGet("BestSellers")]
         public async Task<ActionResult> GetBestSellers()
         {

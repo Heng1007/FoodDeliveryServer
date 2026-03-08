@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace FoodDeliveryServer.Models
 {
@@ -6,17 +6,17 @@ namespace FoodDeliveryServer.Models
     {
         public int Id { get; set; }
 
-        public int Quantity { get; set; } // 买了几个
-        public decimal Price { get; set; } // 当时的单价 (防止涨价影响)
+        public int Quantity { get; set; } // How many bought
+        public decimal Price { get; set; } // Unit price at the time (prevents price changes from affecting past orders)
 
-        // 关系：属于哪个主订单
+        // Relationship: Which main order does it belong to
         public int OrderId { get; set; }
 
         [JsonIgnore]
         public Order? Order { get; set; }
 
-        // 关系：是哪种食物
-        public int FoodId { get; set; }   // 对应你的 FoodItem 表
+        // Relationship: Which food item is it
+        public int FoodId { get; set; }   // Corresponds to your FoodItem table
         public FoodItem? Food { get; set; }
     }
 }
